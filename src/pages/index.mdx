@@ -1,12 +1,14 @@
 ---
 layout: ../layouts/Layout.astro
-title: Research Project Page Template
-description: Simple project page template for your research paper, built with Astro and Tailwind CSS
-favicon: favicon.svg
-thumbnail: screenshot.png
+title: "Proxies for Distortion and Consistency with Applications for Real-World Image Restoration" 
+description: Solve inverse problems with latent diffusion models by mimicking degradations in the latent space
+favicon: silo.svg
+thumbnail: thumbnail.png
 ---
 
 import Layout from "../layouts/Layout.astro";
+import '@iconify-json/simple-icons';
+
 
 import Header from "../components/Header.astro";
 import Video from "../components/Video.astro";
@@ -17,10 +19,21 @@ import Image from "../components/Image.astro";
 import TwoColumns from "../components/TwoColumns.astro";
 import YouTubeVideo from "../components/YouTubeVideo.astro";
 import LaTeX from "../components/LaTeX.astro";
+import ImageComparison from "../components/ImageComparison.astro";
 
-import outside from "../assets/outside.mp4";
-import transformer from "../assets/transformer.webp";
-import Splat from "../components/Splat.tsx"
+{/* images */}
+import img_485 from "../assets/485-gb.png";
+import img_713 from "../assets/713-ip.png";
+import img_880 from "../assets/880-sr_8.png";
+import hero_fig from "../assets/hero_fig.png";
+import after1 from "../assets/1_after.png";
+import after2 from "../assets/2_after.png";
+import after3 from "../assets/3_after.png";
+import after4 from "../assets/4_after.png";
+import before1 from "../assets/1_before.png";
+import before2 from "../assets/2_before.png";
+import before3 from "../assets/3_before.png";
+import before4 from "../assets/4_before.png";
 
 import CodeBlock from "../components/CodeBlock.astro";
 import Table from "../components/Table.astro";
@@ -30,82 +43,196 @@ export const components = {pre: CodeBlock, table: Table}
   title={frontmatter.title}
   authors={[
     {
-      name: "Roman Hauksson",
-      url: "https://roman.technology",
-      institution: "Independent",
-      notes: ["*", "†"],
+      name: "Ron Raphaeli",
+      url: "https://scholar.google.com/citations?user=kJeQaucAAAAJ&hl=en",
+      institution: "Technion",
     },
     {
-      name: "Author Two",
-      institution: "Institution Two",
-      notes: ["*", "†"],
+      name: "Sean Man",
+      url: "https://scholar.google.com/citations?user=VRCALiIAAAAJ&hl=en",
+      institution: "Technion",
     },
     {
-      name: "Author Three",
-      institution: "Institution Three",
-      notes: ["†"],
-    },
-    {
-      name: "Author Four",
-      institution: "Institution Four",
+      name: "Michael Elad",
+      url: "https://elad.cs.technion.ac.il/",
+      institution: "Technion",
     },
   ]}
-  conference="Conference Name"
+  conference=""
   notes={[
-    {
-      symbol: "*",
-      text: "author note one",
-    },
-    {
-      symbol: "†",
-      text: "author note two",
-    },
-  ]}
+      {/* {
+        symbol: "*",
+        text: "author note one",
+      },
+      {
+        symbol: "†",
+        text: "author note two",
+      }, */}
+    ]}
   links={[
-    {
-      name: "Paper",
+    /* {
+      name: "Paper (soon)",
       url: "",
-      icon: "ri:file-pdf-2-line",
-    },
+      icon: "fa-solid:file-pdf",
+    }, */
     {
-      name: "Code",
-      url: "https://github.com/RomanHauksson/academic-project-astro-template",
-      icon: "ri:github-line",
-    },
-    {
-      name: "arXiv",
+      name: "Paper (soon)",
       url: "",
       icon: "academicons:arxiv",
     },
     {
-      name: "Bluesky",
+      name: "Code (soon)",
+      url: "https://github.com/RomanHauksson/academic-project-astro-template",
+      icon: "mdi:github",
+    },
+    {
+      name: "HF demo (soon)",
       url: "",
-      icon: "ri:bluesky-line"
-    }
+      icon: "simple-icons:huggingface",
+    },
   ]}
   />
 
-<Video source={outside} />
+<HighlightedSection>
+<center>
+  **tl;dr:** solve inverse problems with latent diffusion models by mimicking degradations in the latent space
+</center>
+</HighlightedSection>
+
+<Figure caption="Example restorations of FFHQ and COCO images undergone masking, Gaussian blur, and down-sampling using RealisticVisionV5.1 and StableDiffusionV1.5 models">
+    <ImageComparison
+        beforeImage={before1}
+        afterImage={after1}
+        beforeLabel="Degraded"
+        afterLabel="Restored"
+    />
+    <ImageComparison
+        beforeImage={before2}
+        afterImage={after2}
+        beforeLabel="Degraded"
+        afterLabel="Restored"
+    />
+    <ImageComparison
+        beforeImage={before3}
+        afterImage={after3}
+        beforeLabel="Degraded"
+        afterLabel="Restored"
+    />
+    <ImageComparison
+        beforeImage={before4}
+        afterImage={after4}
+        beforeLabel="Degraded"
+        afterLabel="Restored"
+    />
+</Figure>
+
+{/* <Image source={hero} altText="hero fig"/> */}
 
 <HighlightedSection>
 
 ## Abstract
 
-This is a live demo for a template you can use to create a simple project page for your research paper. See the code for the template and instructions on how to use it yourself [here](https://github.com/RomanHauksson/academic-project-astro-template). It's made with the [Astro web framework](https://astro.build/) and styled with [Tailwind CSS](https://tailwindcss.com/). You write the content in [MDX](https://mdxjs.com/), which enables markdown formatting like **bold**, _italics_, and ~strikethrough~, as well as custom components like <SmallCaps>small caps.</SmallCaps>
+Consistent improvement of image priors over the years has led to the development of better inverse problem solvers.
+Diffusion models are the newcomers to this arena, posing the strongest known prior to date. 
+Recently, such models operating in a latent space have become increasingly predominant due to their efficiency.
+In recent works, these models have been applied to solve inverse problems.
+Working in the latent space typically requires multiple applications of an Autoencoder during the restoration process, which leads to both computational and restoration quality challenges.
+In this work, we propose a new approach for handling inverse problems with latent diffusion models, where a learned degradation function operates within the latent space, emulating a known image space degradation.
+Usage of the learned operator reduces the dependency on the Autoencoder to only the initial and final steps of the restoration process, facilitating faster sampling and superior restoration quality.
+We demonstrate the effectiveness of our method on a variety of image restoration tasks and datasets, achieving significant improvements over prior art.
 
 </HighlightedSection>
 
-## Figures
+{/* ## In a nutshell
 
-Use the figure component to display images, videos, equations, or any other element, with an optional caption.
+SILO provides a way to solve inverse problems using latent diffusion by learning how to mimic known degradations, in the latent space.  
+Our method aims to provide a simple solution that do not depend on regularizations or intensive computations during inference. */}
 
-<Figure
+<Figure caption="<b>Computational schemes of prior work and SILO.</b> (a): Prior work enforces consistency to the measurement in pixel space, resulting in differentiation through the decoder. (b): SILO keeps all calculations in the latent space. This allows faster reconstructions while improving their perceptual quality compared to prior work">
+  <Image source={hero_fig} altText="comparison to prior work"/>
+</Figure>
+
+<HighlightedSection>
+### SILO: Reconstruction Algorithm
+
+<TwoColumns>
+  <div slot="left">
+    ### Inputs
+    - Measurement <LaTeX inline formula="y" />  
+    - Encoder <LaTeX inline formula="\mathcal{E}" />  
+    - Decoder <LaTeX inline formula="\mathcal{D}" />  
+    - Trained degradation operator <LaTeX inline formula="H_\theta" />  
+    - Text condition <LaTeX inline formula="\mathcal{C}" />  
+    - Consistency scale <LaTeX inline formula="\eta" />  
+
+    **Output**:  
+    - A reconstruction <LaTeX inline formula="\hat{x}" />
+  </div>
+
+  <div slot="right">
+    1. **Initialization**: Sample <LaTeX inline formula="z_T \sim \mathcal{N}(0, I)" />  
+    2. **Encoding**:
+       <LaTeX inline formula="w = \text{clamp}(\mathcal{E}(y), -4, 4)" />  
+    3. **For** <LaTeX inline formula="t = T" /> to <LaTeX inline formula="1" />:  
+       - <LaTeX inline formula="\hat{\epsilon} \leftarrow \text{Denoise}(z_t, t, \mathcal{C})" />  
+       - <LaTeX inline formula="\hat{z}^t_0 \leftarrow \text{PredictCleanSample}( z_t, \hat{\epsilon} )" />  
+       - <LaTeX inline formula="z'_{t-1} \leftarrow \text{DDPMStep}(z_t, \hat{z}^t_0, \hat{\epsilon} )" />  
+       - <LaTeX inline formula="\hat{w}^t \leftarrow H_\theta(\hat{z}^t_0, t)" />  
+       - <LaTeX inline formula="z_{t-1} \leftarrow z'_{t-1} - \eta \nabla_{z_t} \| w - \hat{w}^t \|_2" />  
+    4. **Decoding**:  
+       <LaTeX inline formula="\hat{x} = \mathcal{D}(z_0)" />  
+    5. **Return** <LaTeX inline formula="\hat{x}" />
+  </div>
+</TwoColumns>
+</HighlightedSection>
+
+## Results 
+Below are some results of our method. More can be found in the paper.
+
+{/* Use the figure component to display images, videos, equations, or any other element, with an optional caption. */}
+
+<Table style={{ borderCollapse: 'collapse', width: '100%' }}>
+  <thead>
+    <tr>
+      <th style={{ textAlign: 'center', verticalAlign: 'middle', width: '16.6%', borderTop: '1px solid black', borderBottom: '1px solid black' }}>x</th>
+      <th style={{ textAlign: 'center', verticalAlign: 'middle', width: '16.6%', borderTop: '1px solid black', borderBottom: '1px solid black' }}>y</th>
+      <th style={{ textAlign: 'center', verticalAlign: 'middle', width: '16.6%', borderTop: '1px solid black', borderBottom: '1px solid black' }}>Ours (RV)</th>
+      <th style={{ textAlign: 'center', verticalAlign: 'middle', width: '16.6%', borderTop: '1px solid black', borderBottom: '1px solid black' }}>Ours (SD)</th>
+      <th style={{ textAlign: 'center', verticalAlign: 'middle', width: '16.6%', borderTop: '1px solid black', borderBottom: '1px solid black' }}>ReSample</th>
+      <th style={{ textAlign: 'center', verticalAlign: 'middle', width: '16.6%', borderTop: '1px solid black', borderBottom: '1px solid black' }}>PSLD</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td colspan="6" style={{ textAlign: 'center', borderTop: '1px solid black', borderBottom: '1px solid black', padding: '5px' }}>
+        <Image source={img_713} altText="hero fig" />
+      </td>
+    </tr>
+    <tr>
+      <td colspan="6" style={{ textAlign: 'center', borderTop: '1px solid black', borderBottom: '1px solid black', padding: '5px' }}>
+        <Image source={img_880} altText="hero fig" />
+      </td>
+    </tr>
+    <tr>
+      <td colspan="6" style={{ textAlign: 'center', borderTop: '1px solid black', borderBottom: '1px solid black', padding: '5px' }}>
+        <Image source={img_485} altText="hero fig" />
+      </td>
+    </tr>
+  </tbody>
+</Table>
+
+
+
+
+
+
+{/* <Figure
     caption="Diagram of the transformer deep learning architecture."
   >
     <Image source={transformer} altText="Diagram of the transformer deep learning architecture." />
-</Figure>
+</Figure> */}
 
-## Two columns
+{/* ## Two columns
 
 Use the two columns component to display two columns of content. In this example, the first column contains a figure with a YouTube video and the second column contains a figure with a custom [React](https://react.dev/) component. By default, they display side by side, but if the screen is narrow enough (for example, on mobile), they're arranged vertically.
 
@@ -134,18 +261,13 @@ Go down a level to heading 3...
 
 You can also add LaTeX formulas, rendered during the build process using [KaTeX](https://katex.org/) so they're quick to load for visitors of your project page. You can write them inline, like this: <LaTeX inline formula="a^2 + b^2 = c^2" />. Or, you can write them as a block:
 
-<LaTeX formula="\int_a^b f(x) dx" />
+<LaTeX formula="z_T \sim \mathcal{N}(0, I) \text{Encoding:} \space w = \text{clamp}(\mathcal{E}(y),-4,4)" /> */}
 
-## Tables
+{/* ## Tables
 
-You can add simple tables using [GitHub Flavored Markdown syntax](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/organizing-information-with-tables):
+You can add simple tables using [GitHub Flavored Markdown syntax](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/organizing-information-with-tables): */}
 
-| Model | Accuracy | F1 score | Training time (hours) |
-| :--- | :---: | :---: | :---: |
-| BERT-base | 0.89 | 0.87 | 4.5 |
-| RoBERTa-large | 0.92 | 0.91 | 7.2 |
-| DistilBERT | 0.86 | 0.84 | 2.1 |
-| XLNet | 0.90 | 0.89 | 6.8 |
+
 
 ## BibTeX citation
 

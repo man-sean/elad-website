@@ -10,7 +10,5 @@ const { caption } = Astro.props;
   <div class="*:max-h-[35rem] *:object-contain flex justify-center w-full">
     <slot />
   </div>
-  <figcaption class="text-center text-zinc-700">
-    {caption}
-  </figcaption>
+  <figcaption class="text-center text-zinc-700" set:html={caption}/>
 </figure>
