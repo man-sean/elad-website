@@ -2,7 +2,7 @@
 layout: ../layouts/Layout.astro
 title: "Proxies for Distortion and Consistency with Applications for Real-World Image Restoration" 
 description: Solve inverse problems with latent diffusion models by mimicking degradations in the latent space
-favicon: silo.svg
+favicon: face.svg
 thumbnail: thumbnail.png
 ---
 
@@ -22,18 +22,17 @@ import LaTeX from "../components/LaTeX.astro";
 import ImageComparison from "../components/ImageComparison.astro";
 
 {/* images */}
-import img_485 from "../assets/485-gb.png";
-import img_713 from "../assets/713-ip.png";
-import img_880 from "../assets/880-sr_8.png";
 import hero_fig from "../assets/hero_fig.png";
-import after1 from "../assets/1_after.png";
-import after2 from "../assets/2_after.png";
-import after3 from "../assets/3_after.png";
-import after4 from "../assets/4_after.png";
-import before1 from "../assets/1_before.png";
-import before2 from "../assets/2_before.png";
-import before3 from "../assets/3_before.png";
-import before4 from "../assets/4_before.png";
+import est_acc from "../assets/est_acc.png";
+import est_realworld from "../assets/est_realworld.png";
+import alg from "../assets/alg.png";
+import prox from "../assets/prox.png";
+import wider_deg from "../assets/0011_wider_degraded.png";
+import wider_elad from "../assets/0011_wider_elad.png";
+import webphoto_deg from "../assets/00050_02_webphoto_degraded.png";
+import webphoto_elad from "../assets/00050_02_webphoto_elad.png";
+import lfw_deg from "../assets/Jan_Ullrich_0001_00_lfw_degraded.png";
+import lfw_elad from "../assets/Jan_Ullrich_0001_00_lfw_elad.png";
 
 import CodeBlock from "../components/CodeBlock.astro";
 import Table from "../components/Table.astro";
@@ -43,13 +42,18 @@ export const components = {pre: CodeBlock, table: Table}
   title={frontmatter.title}
   authors={[
     {
-      name: "Ron Raphaeli",
-      url: "https://scholar.google.com/citations?user=kJeQaucAAAAJ&hl=en",
+      name: "Sean Man",
+      url: "https://scholar.google.com/citations?user=VRCALiIAAAAJ&hl=en",
       institution: "Technion",
     },
     {
-      name: "Sean Man",
-      url: "https://scholar.google.com/citations?user=VRCALiIAAAAJ&hl=en",
+      name: "Guy Ohayon",
+      url: "https://scholar.google.com/citations?user=Gso71ogAAAAJ&hl=en",
+      institution: "Technion",
+    },
+    {
+      name: "Ron Raphaeli",
+      url: "https://scholar.google.com/citations?user=kJeQaucAAAAJ&hl=en",
       institution: "Technion",
     },
     {
@@ -95,32 +99,26 @@ export const components = {pre: CodeBlock, table: Table}
 
 <HighlightedSection>
 <center>
-  **tl;dr:** solve inverse problems with latent diffusion models by mimicking degradations in the latent space
+  **tl;dr:** a framework for designing and evaluating real-world image restoration algorithms, including a degradation estimator, a P&P restoration method, and no-reference proxies for MSE and LPIPS
 </center>
 </HighlightedSection>
 
-<Figure caption="Example restorations of FFHQ and COCO images undergone masking, Gaussian blur, and down-sampling using RealisticVisionV5.1 and StableDiffusionV1.5 models">
+<Figure caption="Example restorations of real-world images from WIDER, WebPhoto and LFW datasets using ELAD">
     <ImageComparison
-        beforeImage={before1}
-        afterImage={after1}
+        beforeImage={wider_deg}
+        afterImage={wider_elad}
         beforeLabel="Degraded"
         afterLabel="Restored"
     />
     <ImageComparison
-        beforeImage={before2}
-        afterImage={after2}
+        beforeImage={webphoto_deg}
+        afterImage={webphoto_elad}
         beforeLabel="Degraded"
         afterLabel="Restored"
     />
     <ImageComparison
-        beforeImage={before3}
-        afterImage={after3}
-        beforeLabel="Degraded"
-        afterLabel="Restored"
-    />
-    <ImageComparison
-        beforeImage={before4}
-        afterImage={after4}
+        beforeImage={lfw_deg}
+        afterImage={lfw_elad}
         beforeLabel="Degraded"
         afterLabel="Restored"
     />
@@ -130,100 +128,90 @@ export const components = {pre: CodeBlock, table: Table}
 
 <HighlightedSection>
 
-## Abstract
-
-Consistent improvement of image priors over the years has led to the development of better inverse problem solvers.
-Diffusion models are the newcomers to this arena, posing the strongest known prior to date. 
-Recently, such models operating in a latent space have become increasingly predominant due to their efficiency.
-In recent works, these models have been applied to solve inverse problems.
-Working in the latent space typically requires multiple applications of an Autoencoder during the restoration process, which leads to both computational and restoration quality challenges.
-In this work, we propose a new approach for handling inverse problems with latent diffusion models, where a learned degradation function operates within the latent space, emulating a known image space degradation.
-Usage of the learned operator reduces the dependency on the Autoencoder to only the initial and final steps of the restoration process, facilitating faster sampling and superior restoration quality.
-We demonstrate the effectiveness of our method on a variety of image restoration tasks and datasets, achieving significant improvements over prior art.
-
-</HighlightedSection>
-
-{/* ## In a nutshell
-
-SILO provides a way to solve inverse problems using latent diffusion by learning how to mimic known degradations, in the latent space.  
-Our method aims to provide a simple solution that do not depend on regularizations or intensive computations during inference. */}
-
-<Figure caption="<b>Computational schemes of prior work and SILO.</b> (a): Prior work enforces consistency to the measurement in pixel space, resulting in differentiation through the decoder. (b): SILO keeps all calculations in the latent space. This allows faster reconstructions while improving their perceptual quality compared to prior work">
-  <Image source={hero_fig} altText="comparison to prior work"/>
-</Figure>
-
-<HighlightedSection>
-### SILO: Reconstruction Algorithm
-
 <TwoColumns>
-  <div slot="left">
-    ### Inputs
-    - Measurement <LaTeX inline formula="y" />  
-    - Encoder <LaTeX inline formula="\mathcal{E}" />  
-    - Decoder <LaTeX inline formula="\mathcal{D}" />  
-    - Trained degradation operator <LaTeX inline formula="H_\theta" />  
-    - Text condition <LaTeX inline formula="\mathcal{C}" />  
-    - Consistency scale <LaTeX inline formula="\eta" />  
+  <div slot="left" style="text-align: justify;">
+    ## Abstract
 
-    **Output**:  
-    - A reconstruction <LaTeX inline formula="\hat{x}" />
+    Real-world image restoration deals with the recovery of images suffering from an unknown degradation.
+    This task is typically addressed while being given only degraded images, without their corresponding ground-truth versions.
+    In this hard setting, designing and evaluating restoration algorithms becomes highly challenging.
+    This paper offers a suite of tools that can serve both the design and assessment of real-world image restoration algorithms.
+    Our work starts by proposing a trained model that predicts the chain of degradations a given real-world measured input has gone through.
+    We show how this estimator can be used to approximate the consistency – the match between the measurements and any proposed recovered image.
+    We also use this estimator as a guiding force for the design of a simple and highly-effective plug-and-play real-world image restoration algorithm, leveraging a pre-trained diffusion-based image prior.
+    Furthermore, this work proposes no-reference proxy measures of MSE and LPIPS, which, without access to the ground-truth images, allow ranking of real-world image restoration algorithms according to their (approximate) MSE and LPIPS.
+    The proposed suite provides a versatile, first of its kind framework for evaluating and comparing blind image restoration algorithms in real-world scenarios.
   </div>
-
   <div slot="right">
-    1. **Initialization**: Sample <LaTeX inline formula="z_T \sim \mathcal{N}(0, I)" />  
-    2. **Encoding**:
-       <LaTeX inline formula="w = \text{clamp}(\mathcal{E}(y), -4, 4)" />  
-    3. **For** <LaTeX inline formula="t = T" /> to <LaTeX inline formula="1" />:  
-       - <LaTeX inline formula="\hat{\epsilon} \leftarrow \text{Denoise}(z_t, t, \mathcal{C})" />  
-       - <LaTeX inline formula="\hat{z}^t_0 \leftarrow \text{PredictCleanSample}( z_t, \hat{\epsilon} )" />  
-       - <LaTeX inline formula="z'_{t-1} \leftarrow \text{DDPMStep}(z_t, \hat{z}^t_0, \hat{\epsilon} )" />  
-       - <LaTeX inline formula="\hat{w}^t \leftarrow H_\theta(\hat{z}^t_0, t)" />  
-       - <LaTeX inline formula="z_{t-1} \leftarrow z'_{t-1} - \eta \nabla_{z_t} \| w - \hat{w}^t \|_2" />  
-    4. **Decoding**:  
-       <LaTeX inline formula="\hat{x} = \mathcal{D}(z_0)" />  
-    5. **Return** <LaTeX inline formula="\hat{x}" />
+    <Figure caption='<p>
+  <strong>Paper overview.</strong> We propose 
+  <span style="color: blue; border: 1px solid blue; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; justify-content: center; align-items: center; font-size: 14px;">1</span> an estimator that predicts the degradations a real-world input has undergone. Using this, we 
+  <span style="color: orange; border: 1px solid orange; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; justify-content: center; align-items: center; font-size: 14px;">2</span> evaluate the consistency of reconstructed candidates and 
+  <span style="color: purple; border: 1px solid purple; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; justify-content: center; align-items: center; font-size: 14px;">3</span> develop a plug-and-play restoration algorithm. Finally, we propose 
+  <span style="color: green; border: 1px solid green; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; justify-content: center; align-items: center; font-size: 14px;">4</span> no-reference measures of distortion that mimic MSE and LPIPS, eliminating the need for ground-truth images.
+</p>
+'>
+      <Image source={hero_fig} altText="method overview"/>
+    </Figure>
   </div>
 </TwoColumns>
 </HighlightedSection>
 
-## Results 
-Below are some results of our method. More can be found in the paper.
+## Degradation Estimation
+<TwoColumns>
+<div slot="left" style="text-align: justify;">
+  ### Degradation estimator
+  We train a degradation estimator that predicts the parameters of the degradations applied to an image. The estimator achieves high accuracy on blind face degradations, as seen visually from the scatter plots and quantitatively from the R-squared scores.
+</div>
+<div slot="right">
+<Figure caption=''>
+      <Image source={est_acc} altText="estimator accuracy"/>
+    </Figure>
+</div>
+</TwoColumns>
 
-{/* Use the figure component to display images, videos, equations, or any other element, with an optional caption. */}
+<TwoColumns>
+<div slot="left" style="text-align: justify;">
+  ### Degradations in real-world BFR datasets
+  Using our degradation estimator, we reveal the degradations' distribution in real-world datasets. This information can be utilized to better analyze such datasets and mimic them.
+ </div>
+<div slot="right">
+<Figure caption=''>
+      <Image source={est_realworld} altText="estimator accuracy"/>
+    </Figure>
+</div>
+</TwoColumns>
 
-<Table style={{ borderCollapse: 'collapse', width: '100%' }}>
-  <thead>
-    <tr>
-      <th style={{ textAlign: 'center', verticalAlign: 'middle', width: '16.6%', borderTop: '1px solid black', borderBottom: '1px solid black' }}>x</th>
-      <th style={{ textAlign: 'center', verticalAlign: 'middle', width: '16.6%', borderTop: '1px solid black', borderBottom: '1px solid black' }}>y</th>
-      <th style={{ textAlign: 'center', verticalAlign: 'middle', width: '16.6%', borderTop: '1px solid black', borderBottom: '1px solid black' }}>Ours (RV)</th>
-      <th style={{ textAlign: 'center', verticalAlign: 'middle', width: '16.6%', borderTop: '1px solid black', borderBottom: '1px solid black' }}>Ours (SD)</th>
-      <th style={{ textAlign: 'center', verticalAlign: 'middle', width: '16.6%', borderTop: '1px solid black', borderBottom: '1px solid black' }}>ReSample</th>
-      <th style={{ textAlign: 'center', verticalAlign: 'middle', width: '16.6%', borderTop: '1px solid black', borderBottom: '1px solid black' }}>PSLD</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td colspan="6" style={{ textAlign: 'center', borderTop: '1px solid black', borderBottom: '1px solid black', padding: '5px' }}>
-        <Image source={img_713} altText="hero fig" />
-      </td>
-    </tr>
-    <tr>
-      <td colspan="6" style={{ textAlign: 'center', borderTop: '1px solid black', borderBottom: '1px solid black', padding: '5px' }}>
-        <Image source={img_880} altText="hero fig" />
-      </td>
-    </tr>
-    <tr>
-      <td colspan="6" style={{ textAlign: 'center', borderTop: '1px solid black', borderBottom: '1px solid black', padding: '5px' }}>
-        <Image source={img_485} altText="hero fig" />
-      </td>
-    </tr>
-  </tbody>
-</Table>
+<HighlightedSection>
 
+## Plug-and-play Blind Restoration Algorithm
 
+<TwoColumns>
+<div slot="left" style="text-align: justify;">
+  ### ELAD
 
+  Using the degradation estimator and a pre-trained diffusion model, we construct a blind restoration algorithm.
+ We extend prior P&P algorithms such as <a href="https://dps2022.github.io/diffusion-posterior-sampling-page/" target="_blank">DPS</a> to support more general degradations (where the noise is not the last operation) by approximating the likelihood using its first-moment.
+</div>
+<div slot="right">
+<Figure caption=''>
+      <Image source={alg} altText="ELAD algorithm"/>
+    </Figure>
+</div>
+</TwoColumns>
 
+</HighlightedSection>
+
+## Proxy MSE & LPIPS
+
+Given a pre-trained MMSE regressor (an <LaTeX inline formula="L_2"/> trained NN), we show how to construct a no-reference distortion measure that mimics the ubiquitous MSE measure. Moreover, by training a simple LPIPS regressor, we construct a similar no-reference measure that mimics LPIPS. Using those measures, we can, for the first time, test the distortion performance of restoration algorithms with no need to access ground-truth data, which is typically unavailable in real-world blind settings.
+
+<Figure caption='<p>
+  <strong>Proxy measures accuracy.</strong> The plots compare the proxy measures with their true counterparts, for several state-of-the-art methods evaluated on the synthetic CelebA-Test datasets. A linear regression line is drawn for better clarity. ProxMSE and ProxLPIPS rank methods similarly to the MSE and LPIPS measures without the need for ground-truth images.
+</p>
+'>
+      <Image source={prox} altText="proxy measures" height={2000}/>
+    </Figure>
 
 
 {/* <Figure

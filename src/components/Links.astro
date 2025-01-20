@@ -15,6 +15,7 @@ const { links } = Astro.props;
       <a
         href={link.url}
         class="flex flex-row bg-zinc-800 text-white rounded-full gap-2 items-center text-lg px-5 py-2 hover:bg-zinc-900 hover:no-underline"
+        target="_blank"
       >
         {link.icon && <Icon name={link.icon} />}
         <span>{link.name}</span>
