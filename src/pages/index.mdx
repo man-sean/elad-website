@@ -8,6 +8,7 @@ thumbnail: thumbnail.png
 
 import Layout from "../layouts/Layout.astro";
 import '@iconify-json/simple-icons';
+import '@iconify-json/academicons';
 
 
 import Header from "../components/Header.astro";
@@ -23,10 +24,12 @@ import ImageComparison from "../components/ImageComparison.astro";
 
 {/* images */}
 import hero_fig from "../assets/hero_fig.png";
+import teaser_method from "../assets/teaser-method.png";
 import est_acc from "../assets/est_acc.png";
 import est_realworld from "../assets/est_realworld.png";
 import alg from "../assets/alg.png";
 import prox from "../assets/prox.png";
+import preliminaries_pixabay from "../assets/preliminaries-pixabay.png";
 import wider_deg from "../assets/0011_wider_degraded.png";
 import wider_elad from "../assets/0011_wider_elad.png";
 import webphoto_deg from "../assets/00050_02_webphoto_degraded.png";
@@ -36,6 +39,8 @@ import lfw_elad from "../assets/Jan_Ullrich_0001_00_lfw_elad.png";
 
 import CodeBlock from "../components/CodeBlock.astro";
 import Table from "../components/Table.astro";
+import BibTeX from "../components/BibTeX.astro";
+import InlineMathCaption from "../components/InlineMathCaption.astro";
 export const components = {pre: CodeBlock, table: Table}
 
 <Header
@@ -57,7 +62,7 @@ export const components = {pre: CodeBlock, table: Table}
       institution: "Technion",
     },
     {
-      name: "Matan Kleiner,",
+      name: "Matan Kleiner",
       url: "https://scholar.google.com/citations?hl=en&user=n3R271gAAAAJ",
       institution: "Technion",
     },
@@ -67,7 +72,7 @@ export const components = {pre: CodeBlock, table: Table}
       institution: "Technion",
     },
   ]}
-  conference=""
+  conference="SIGGRAPH Asia 2025"
   notes={[
       {/* {
         symbol: "*",
@@ -85,26 +90,30 @@ export const components = {pre: CodeBlock, table: Table}
       icon: "fa-solid:file-pdf",
     }, */
     {
-      name: "Paper (PDF)",
-      url: "https://drive.google.com/file/d/1UVNQtwfkjtKPgVl9paKRhojquOGIPD86/view?usp=share_link",
-      icon: "fa-solid:file-pdf",
+      name: "Paper",
+      url: "https://dl.acm.org/doi/pdf/10.1145/3757377.3763969",
+      icon: "academicons:acm",
+    },
+    {
+      name: "Appendix",
+      url: "https://dl.acm.org/doi/suppl/10.1145/3757377.3763969/suppl_file/appendix.pdf",
+      icon: "academicons:acm",
     },
     {
       name: "Code (soon)",
       url: "",
       icon: "mdi:github",
     },
-    {
-      name: "HF demo (soon)",
-      url: "",
-      icon: "simple-icons:huggingface",
-    },
   ]}
+  doi={{
+    url: "https://doi.org/10.1145/3757377.3763969",
+    text: "10.1145/3757377.3763969",
+  }}
   />
 
 <HighlightedSection>
 <center>
-  **tl;dr:** a framework for designing and evaluating real-world image restoration algorithms, including a degradation estimator, a P&P restoration method, and no-reference proxies for MSE and LPIPS
+  **tl;dr:** ELAD is a plug-and-play method for blind face restoration that explicitly models the likelihood with a degradation estimator, enabling principled Bayesian inference and strong distortion/identity metrics without end-to-end training.
 </center>
 </HighlightedSection>
 
@@ -132,34 +141,50 @@ export const components = {pre: CodeBlock, table: Table}
 {/* <Image source={hero} altText="hero fig"/> */}
 
 <HighlightedSection>
-
-<TwoColumns>
-  <div slot="left" style="text-align: justify;">
+<div style="text-align: justify;">
     ## Abstract
 
-    Real-world image restoration deals with the recovery of images suffering from an unknown degradation.
-    This task is typically addressed while being given only degraded images, without their corresponding ground-truth versions.
-    In this hard setting, designing and evaluating restoration algorithms becomes highly challenging.
-    This paper offers a suite of tools that can serve both the design and assessment of real-world image restoration algorithms.
-    Our work starts by proposing a trained model that predicts the chain of degradations a given real-world measured input has gone through.
-    We show how this estimator can be used to approximate the consistency – the match between the measurements and any proposed recovered image.
-    We also use this estimator as a guiding force for the design of a simple and highly-effective plug-and-play real-world image restoration algorithm, leveraging a pre-trained diffusion-based image prior.
-    Furthermore, this work proposes no-reference proxy measures of MSE and LPIPS, which, without access to the ground-truth images, allow ranking of real-world image restoration algorithms according to their (approximate) MSE and LPIPS.
-    The proposed suite provides a versatile, first of its kind framework for evaluating and comparing blind image restoration algorithms in real-world scenarios.
+    Blind Face Restoration (BFR) aims to recover face images suffering from unknown degradations.
+    A recent approach to solve BFR is via plug-and-play methods for image restoration, which combine a likelihood function with pre-trained diffusion models as priors.
+    However, as the likelihood is inherently unknown in BFR, existing methods rely instead on heuristic constraints.
+    This leads to suboptimal distortion and identity preservation metrics.
+    We introduce Expectation-based Likelihood Approximation with Diffusion prior (ELAD), a novel plug-and-play approach that explicitly models the likelihood function for BFR.
+    ELAD estimates the first and second moments of the likelihood distribution by employing a Degradation Estimator to predict the degradation sequence from the input.
+    This enables principled Bayesian inference without requiring end-to-end training.
+    Our method achieves state-of-the-art distortion and identity preservation results compared to existing plug-and-play BFR techniques, while maintaining competitive perceptual quality.
+    As we show, while being plug-and-play, our method still rivals end-to-end trained BFR models.
   </div>
-  <div slot="right">
-    <Figure caption='<p>
-  <strong>Paper overview.</strong> We propose 
-  <span style="color: blue; border: 1px solid blue; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; justify-content: center; align-items: center; font-size: 14px;">1</span> an estimator that predicts the degradations a real-world input has undergone. Using this, we 
-  <span style="color: orange; border: 1px solid orange; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; justify-content: center; align-items: center; font-size: 14px;">2</span> evaluate the consistency of reconstructed candidates and 
-  <span style="color: purple; border: 1px solid purple; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; justify-content: center; align-items: center; font-size: 14px;">3</span> develop a plug-and-play restoration algorithm. Finally, we propose 
-  <span style="color: green; border: 1px solid green; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; justify-content: center; align-items: center; font-size: 14px;">4</span> no-reference measures of distortion that mimic MSE and LPIPS, eliminating the need for ground-truth images.
-</p>
-'>
-      <Image source={hero_fig} altText="method overview"/>
+  <Figure caption="<p><strong>Method overview.</strong> ELAD uses a degradation estimator to model the likelihood and enables principled plug-and-play restoration.</p>">
+    <Image source={teaser_method} altText="method overview"/>
+  </Figure>
+</HighlightedSection>
+
+## Problem overview
+Real-world blind face restoration observes only a degraded measurement <LaTeX inline formula="y" />, produced by an unknown sequence of degradations applied to a clean image <LaTeX inline formula="x" />. Our goal is to sample restored images <LaTeX inline formula="\\hat{x}" /> that are consistent with the measurements while maintaining high perceptual quality.
+
+<Figure caption="<p>Problem setup overview.</p>">
+  <Image source={preliminaries_pixabay} altText="problem overview"/>
+</Figure>
+<InlineMathCaption
+  text={String.raw`(top) A clean image $x$ undergoes a sequence of blur, down-sampling, noising, and compression-decompression operations with unknown parameters $a$ to create the observed degraded measurement $y$. (bottom) Given $y$, we aim to sample images $\hat{x}$ from the posterior $p_{X\mid Y,A}$, each consistent with the measurements and with high perceptual quality.`}
+/>
+
+<HighlightedSection>
+
+## Plug-and-play Blind Restoration Algorithm
+
+<TwoColumns>
+<div slot="left" style="text-align: justify;">
+  Using the degradation estimator and a pre-trained diffusion model, we construct a blind restoration algorithm.
+ We extend prior P&P algorithms such as <a href="https://dps2022.github.io/diffusion-posterior-sampling-page/" target="_blank">DPS</a> to support more general degradations (where the noise is not the last operation) by approximating the likelihood using its first-moment.
+</div>
+<div slot="right">
+<Figure caption=''>
+      <Image source={alg} altText="ELAD algorithm"/>
     </Figure>
-  </div>
+</div>
 </TwoColumns>
+
 </HighlightedSection>
 
 ## Degradation Estimation
@@ -186,26 +211,6 @@ export const components = {pre: CodeBlock, table: Table}
     </Figure>
 </div>
 </TwoColumns>
-
-<HighlightedSection>
-
-## Plug-and-play Blind Restoration Algorithm
-
-<TwoColumns>
-<div slot="left" style="text-align: justify;">
-  ### ELAD
-
-  Using the degradation estimator and a pre-trained diffusion model, we construct a blind restoration algorithm.
- We extend prior P&P algorithms such as <a href="https://dps2022.github.io/diffusion-posterior-sampling-page/" target="_blank">DPS</a> to support more general degradations (where the noise is not the last operation) by approximating the likelihood using its first-moment.
-</div>
-<div slot="right">
-<Figure caption=''>
-      <Image source={alg} altText="ELAD algorithm"/>
-    </Figure>
-</div>
-</TwoColumns>
-
-</HighlightedSection>
 
 ## Proxy MSE & LPIPS
 
@@ -263,13 +268,21 @@ You can add simple tables using [GitHub Flavored Markdown syntax](https://docs.g
 
 
 ## BibTeX citation
-
-```bibtex
-@article{man2025proxiesdistortionconsistencyapplications,
-  title={Proxies for Distortion and Consistency with Applications for Real-World Image Restoration}, 
-  author={Sean Man and Guy Ohayon and Ron Raphaeli and Michael Elad},
-  year={2025},
-  journal={arXiv preprint arXiv:2501.12102},
-  url={https://arxiv.org/abs/2501.12102}, 
-}
-```
+<BibTeX text={`@inproceedings{10.1145/3757377.3763969,
+author = {Man, Sean and Ohayon, Guy and Raphaeli, Ron and Kleiner, Matan and Elad, Michael},
+title = {ELAD: Blind Face Restoration using Expectation-based Likelihood Approximation and Diffusion Prior},
+year = {2025},
+isbn = {9798400721373},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3757377.3763969},
+doi = {10.1145/3757377.3763969},
+booktitle = {Proceedings of the SIGGRAPH Asia 2025 Conference Papers},
+articleno = {63},
+numpages = {12},
+keywords = {Blind Face Restoration, Image Restoration, Plug and Play, Diffusion Prior, Posterior Sampling},
+location = {
+},
+series = {SA Conference Papers '25}
+}`}
+/>

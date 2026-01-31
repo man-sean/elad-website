@@ -1,0 +1,33 @@
+---
+import katex from "katex";
+
+interface Props {
+  text: string;
+  className?: string;
+}
+
+const { text, className = "" } = Astro.props as Props;
+
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+let html = "";
+let lastIndex = 0;
+const regex = /\$(.+?)\$/g;
+let match: RegExpExecArray | null = null;
+
+while ((match = regex.exec(text)) !== null) {
+  html += escapeHtml(text.slice(lastIndex, match.index));
+  html += katex.renderToString(match[1], { throwOnError: false });
+  lastIndex = match.index + match[0].length;
+}
+
+html += escapeHtml(text.slice(lastIndex));
+---
+
+<p class={`text-center text-zinc-700 text-sm ${className}`} set:html={html} />

@@ -1,0 +1,60 @@
+---
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props as Props;
+---
+
+<div class="px-6 w-full">
+  <div class="relative w-full">
+    <button
+      class="absolute right-3 top-3 rounded-md border border-zinc-300 bg-white px-3 py-1 text-sm text-zinc-700 hover:bg-zinc-50"
+      type="button"
+      data-bibtex-copy
+      data-bibtex-text={text}
+      aria-label="Copy BibTeX to clipboard"
+    >
+      Copy BibTeX
+    </button>
+    <pre class="flex flex-col whitespace-pre overflow-auto bg-zinc-300 p-4 rounded-lg w-full">
+<code>{text}</code>
+    </pre>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("click", async (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const button = target.closest("[data-bibtex-copy]");
+    if (!(button instanceof HTMLElement)) return;
+
+    const bibtex = button.getAttribute("data-bibtex-text") || "";
+    if (!bibtex) return;
+
+    try {
+      await navigator.clipboard.writeText(bibtex);
+      const original = button.textContent;
+      button.textContent = "Copied";
+      setTimeout(() => {
+        button.textContent = original;
+      }, 1200);
+    } catch {
+      const textarea = document.createElement("textarea");
+      textarea.value = bibtex;
+      textarea.setAttribute("readonly", "true");
+      textarea.style.position = "absolute";
+      textarea.style.left = "-9999px";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      const original = button.textContent;
+      button.textContent = "Copied";
+      setTimeout(() => {
+        button.textContent = original;
+      }, 1200);
+    }
+  });
+</script>
